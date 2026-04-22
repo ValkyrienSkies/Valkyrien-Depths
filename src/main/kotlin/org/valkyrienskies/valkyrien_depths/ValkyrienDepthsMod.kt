@@ -11,10 +11,13 @@ import net.minecraftforge.registries.DeferredRegister
 import net.minecraftforge.registries.ForgeRegistries
 import net.minecraftforge.registries.RegistryObject
 import org.valkyrienskies.mod.api.vsApi
+import org.valkyrienskies.valkyrien_depths.blocks.FloodgateBlock
 import org.valkyrienskies.valkyrien_depths.client.ValkyrienDepthsModClient
+import thedarkcolour.kotlinforforge.forge.MOD_BUS
 
 @Mod("valkyrien_depths")
-class ValkyrienDepthsMod {
+object ValkyrienDepthsMod {
+    const val MOD_ID = "valkyrien_depths"
 
     //Deferred Registries
     private val BLOCKS = DeferredRegister.create(ForgeRegistries.BLOCKS, MOD_ID)
@@ -24,15 +27,18 @@ class ValkyrienDepthsMod {
 
     // Put RegistryObjects here:
 
+    private val FLOODGATE_BLOCK = registerBlockAndItem("floodgate", { FloodgateBlock })
+
     // end of RegistryObjects
 
     init {
-        val modEventBus = FMLJavaModLoadingContext.get().modEventBus
-
-        modEventBus.addListener(::init)
+        MOD_BUS.addListener(::init)
         if (FMLEnvironment.dist.isClient) {
-            modEventBus.addListener(ValkyrienDepthsModClient.Companion::clientInit)
+            MOD_BUS.addListener(ValkyrienDepthsModClient.Companion::clientInit)
         }
+
+        BLOCKS.register(MOD_BUS)
+        ITEMS.register(MOD_BUS)
     }
 
     // Helper function, taken from VS2.
@@ -42,12 +48,9 @@ class ValkyrienDepthsMod {
         return blockRegistry
     }
 
-    companion object {
-        const val MOD_ID = "valkyrien_depths"
-        @JvmStatic
-        fun init (event: FMLCommonSetupEvent) {
-            // Put anything initialized on forge-side here.
+    @JvmStatic
+    fun init (event: FMLCommonSetupEvent) {
+        // Put anything initialized on forge-side here.
 
-        }
     }
 }

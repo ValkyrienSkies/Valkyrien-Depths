@@ -9,8 +9,11 @@ import net.minecraft.world.level.BlockGetter
 import net.minecraft.world.level.Level
 import net.minecraft.world.level.block.Block
 import net.minecraft.world.level.block.Blocks
+import net.minecraft.world.level.block.TrapDoorBlock
 import net.minecraft.world.level.block.state.BlockState
+import net.minecraft.world.level.block.state.StateDefinition
 import net.minecraft.world.level.block.state.properties.BlockStateProperties
+import net.minecraft.world.level.material.Fluids
 import net.minecraft.world.phys.BlockHitResult
 import net.minecraft.world.phys.shapes.CollisionContext
 import net.minecraft.world.phys.shapes.Shapes
@@ -22,6 +25,12 @@ object FloodgateBlock : Block(Properties.copy(Blocks.COPPER_BLOCK)) {
 
     init {
         this.registerDefaultState(this.defaultBlockState().setValue(openedState, false).setValue(waterLogged, false))
+    }
+
+    override fun createBlockStateDefinition(builder: StateDefinition.Builder<Block?, BlockState?>) {
+        super.createBlockStateDefinition(builder)
+        builder.add(BlockStateProperties.OPEN)
+        builder.add(BlockStateProperties.WATERLOGGED)
     }
 
     override fun getStateForPlacement(context: BlockPlaceContext): BlockState? {
@@ -36,16 +45,13 @@ object FloodgateBlock : Block(Properties.copy(Blocks.COPPER_BLOCK)) {
         hand: InteractionHand,
         hit: BlockHitResult
     ): InteractionResult {
-        if (player.getItemInHand(hand).isEmpty) {
-            if (!level.isClientSide) {
-                val lastOpen = state.getValue(openedState)
-                state.setValue(openedState, !lastOpen)
-                level.setBlock(pos, state, 10)
-                level.blockUpdated(pos, state.block)
-                return InteractionResult.SUCCESS
-            }
+        val newState = state.cycle<Boolean?>(TrapDoorBlock.OPEN) as BlockState
+        level.setBlock(pos, newState, 2)
+        if (newState.getValue<Boolean?>(TrapDoorBlock.WATERLOGGED) as Boolean) {
+            level.scheduleTick(pos, Fluids.WATER, Fluids.WATER.getTickDelay(level))
         }
-        return super.use(state, level, pos, player, hand, hit)
+
+        return InteractionResult.sidedSuccess(level.isClientSide)
     }
 
     override fun getCollisionShape(
