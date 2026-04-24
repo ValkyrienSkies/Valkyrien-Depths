@@ -51,7 +51,7 @@ class RudderBlockEntity(pos: BlockPos, blockState: BlockState) : BlockEntity(
         val rudderDeflection = rudderFinModel.dot(rudderSideModel)
         if (abs(rudderDeflection) < MIN_DEFLECTION) return
 
-        val rudderModelPos = this.worldPosition.toJOMLd()
+        val rudderModelPos = this.worldPosition.toJOMLd().add(0.5, 0.5, 0.5)
         val rudderWorldPos = physShip.transform.toWorld.transformPosition(Vector3d(rudderModelPos))
         val centerOfMassWorldPos = Vector3d(physShip.transform.position)
         val rudderOffset = rudderWorldPos.sub(centerOfMassWorldPos, Vector3d())

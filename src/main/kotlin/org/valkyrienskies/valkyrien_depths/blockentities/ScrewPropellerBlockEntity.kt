@@ -41,7 +41,7 @@ class ScrewPropellerBlockEntity(pos: BlockPos, blockState: BlockState) : BlockEn
             Vector3d(propellerDirection).normalize().negate(),
             Vector3d()
         )
-        val propellerModelPos = worldPosition.toJOMLd()
+        val propellerModelPos = worldPosition.toJOMLd().add(0.5, 0.5, 0.5)
         val thrustForce = thrustDirectionWorld.mul(THRUST_FORCE, Vector3d())
 
         physShip.applyWorldForceToModelPos(thrustForce, propellerModelPos)

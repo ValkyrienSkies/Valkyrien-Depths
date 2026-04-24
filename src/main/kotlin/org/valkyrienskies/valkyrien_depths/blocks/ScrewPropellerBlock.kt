@@ -32,7 +32,7 @@ object ScrewPropellerBlock : DirectionalBlock(Properties.copy(Blocks.COPPER_BLOC
     }
 
     override fun getStateForPlacement(context: BlockPlaceContext): BlockState? {
-        return this.defaultBlockState().setValue(FACING, context.clickedFace.opposite)
+        return this.defaultBlockState().setValue(FACING, context.clickedFace)
     }
 
     override fun newBlockEntity(
