@@ -37,8 +37,19 @@ class RudderBlockEntity(pos: BlockPos, blockState: BlockState) : BlockEntity(
         if (physShip == null) return
         if (physShip.liquidOverlap <= 0.0) return
 
-        val rudderFacingDirection = getRudderFacingDirection()
-        if (rudderFacingDirection.lengthSquared() < MIN_DIRECTION_LENGTH_SQUARED) return
+        val neutralFinDirection = facing.normal.toJOMLd()
+        if (neutralFinDirection.lengthSquared() < MIN_DIRECTION_LENGTH_SQUARED) return
+
+        val rudderFinDirection = getRudderFacingDirection()
+        if (rudderFinDirection.lengthSquared() < MIN_DIRECTION_LENGTH_SQUARED) return
+
+        val neutralFinModel = Vector3d(neutralFinDirection).normalize()
+        val rudderFinModel = Vector3d(rudderFinDirection).normalize()
+        val rudderSideModel = neutralFinModel.cross(MODEL_UP, Vector3d()).normalize()
+        if (rudderSideModel.lengthSquared() < MIN_DIRECTION_LENGTH_SQUARED) return
+
+        val rudderDeflection = rudderFinModel.dot(rudderSideModel)
+        if (abs(rudderDeflection) < MIN_DEFLECTION) return
 
         val rudderModelPos = this.worldPosition.toJOMLd()
         val rudderWorldPos = physShip.transform.toWorld.transformPosition(Vector3d(rudderModelPos))
@@ -49,17 +60,14 @@ class RudderBlockEntity(pos: BlockPos, blockState: BlockState) : BlockEntity(
         val speedSquared = rudderVelocity.lengthSquared()
         if (speedSquared < MIN_FLOW_SPEED_SQUARED) return
 
-        val rudderNormalWorld = physShip.transform.rotation.transform(
-            Vector3d(rudderFacingDirection).normalize(),
-            Vector3d()
-        )
-        val normalFlowSpeed = rudderVelocity.dot(rudderNormalWorld)
-        if (abs(normalFlowSpeed) < MIN_NORMAL_FLOW_SPEED) return
+        val neutralFinWorld = physShip.transform.rotation.transform(neutralFinModel, Vector3d())
+        val rudderSideWorld = physShip.transform.rotation.transform(rudderSideModel, Vector3d())
+        val forwardFlowSpeed = -rudderVelocity.dot(neutralFinWorld)
+        if (abs(forwardFlowSpeed) < MIN_FORWARD_FLOW_SPEED) return
 
-        val flowSpeed = kotlin.math.sqrt(speedSquared)
-        val forceMagnitude = (-normalFlowSpeed * flowSpeed * RUDDER_FORCE_COEFFICIENT)
+        val forceMagnitude = (forwardFlowSpeed * abs(forwardFlowSpeed) * rudderDeflection * RUDDER_FORCE_COEFFICIENT)
             .coerceIn(-MAX_RUDDER_FORCE, MAX_RUDDER_FORCE)
-        val rudderForce = rudderNormalWorld.mul(forceMagnitude, Vector3d())
+        val rudderForce = rudderSideWorld.mul(forceMagnitude, Vector3d())
 
         physShip.applyWorldForceToModelPos(rudderForce, rudderModelPos)
     }
@@ -104,10 +112,12 @@ class RudderBlockEntity(pos: BlockPos, blockState: BlockState) : BlockEntity(
     }
 
     companion object {
+        private val MODEL_UP = Vector3d(0.0, 1.0, 0.0)
         private const val RUDDER_FORCE_COEFFICIENT = 600.0
         private const val MAX_RUDDER_FORCE = 25_000.0
         private const val MIN_DIRECTION_LENGTH_SQUARED = 1.0e-6
         private const val MIN_FLOW_SPEED_SQUARED = 1.0e-4
-        private const val MIN_NORMAL_FLOW_SPEED = 1.0e-3
+        private const val MIN_FORWARD_FLOW_SPEED = 1.0e-3
+        private const val MIN_DEFLECTION = 1.0e-3
     }
 }

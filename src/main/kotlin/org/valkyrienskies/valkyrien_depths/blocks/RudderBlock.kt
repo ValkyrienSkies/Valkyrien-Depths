@@ -33,7 +33,7 @@ object RudderBlock : DirectionalBlock(Properties.copy(Blocks.COPPER_BLOCK)), Ent
     }
 
     override fun getStateForPlacement(context: BlockPlaceContext): BlockState? {
-        return this.defaultBlockState()
+        return this.defaultBlockState().setValue(FACING, context.clickedFace.opposite)
     }
 
     override fun newBlockEntity(

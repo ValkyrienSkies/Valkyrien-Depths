@@ -46,6 +46,7 @@ object ValkyrienDepthsMod {
 
         BLOCKS.register(MOD_BUS)
         ITEMS.register(MOD_BUS)
+        BLOCK_ENTITIES.register(MOD_BUS)
     }
 
     // Helper function, taken from VS2.
