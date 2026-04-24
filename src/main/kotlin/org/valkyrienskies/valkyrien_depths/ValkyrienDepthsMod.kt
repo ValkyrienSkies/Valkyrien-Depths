@@ -13,6 +13,7 @@ import net.minecraftforge.registries.ForgeRegistries
 import net.minecraftforge.registries.RegistryObject
 import org.valkyrienskies.mod.api.vsApi
 import org.valkyrienskies.valkyrien_depths.blockentities.RudderBlockEntity
+import org.valkyrienskies.valkyrien_depths.blockentities.ScrewPropellerBlockEntity
 import org.valkyrienskies.valkyrien_depths.blocks.FloodgateBlock
 import org.valkyrienskies.valkyrien_depths.blocks.RudderBlock
 import org.valkyrienskies.valkyrien_depths.client.ValkyrienDepthsModClient
@@ -34,6 +35,8 @@ object ValkyrienDepthsMod {
     private val RUDDER_BLOCK = registerBlockAndItem("rudder", { RudderBlock })
 
     public val RUDDER_BLOCK_ENTITY = BLOCK_ENTITIES.register("rudder") { BlockEntityType.Builder.of<RudderBlockEntity>(::RudderBlockEntity,
+        RudderBlock).build(null) }
+    public val SCREW_PROPELLER_BLOCK_ENTITY = BLOCK_ENTITIES.register("screw propeller") { BlockEntityType.Builder.of< ScrewPropellerBlockEntity>(::ScrewPropellerBlockEntity,
         RudderBlock).build(null) }
 
     // end of RegistryObjects
