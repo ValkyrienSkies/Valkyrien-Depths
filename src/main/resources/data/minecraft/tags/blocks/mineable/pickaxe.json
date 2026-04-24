@@ -1,7 +1,8 @@
 {
   "replace": false,
   "values": [
-    "valkyrien_depths:floodgate"
-    "valkyrien_depths:rudder"
+    "valkyrien_depths:floodgate",
+    "valkyrien_depths:rudder",
+    "valkyrien_depths:screw propeller"
   ]
 }

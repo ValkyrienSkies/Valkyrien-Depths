@@ -33,11 +33,12 @@ object ValkyrienDepthsMod {
 
     private val FLOODGATE_BLOCK = registerBlockAndItem("floodgate", { FloodgateBlock })
     private val RUDDER_BLOCK = registerBlockAndItem("rudder", { RudderBlock })
+    private val SCREW_PROPELLER_BLOCK = registerBlockAndItem("screw_propeller", { org.valkyrienskies.valkyrien_depths.blocks.ScrewPropellerBlock })
 
     public val RUDDER_BLOCK_ENTITY = BLOCK_ENTITIES.register("rudder") { BlockEntityType.Builder.of<RudderBlockEntity>(::RudderBlockEntity,
         RudderBlock).build(null) }
-    public val SCREW_PROPELLER_BLOCK_ENTITY = BLOCK_ENTITIES.register("screw propeller") { BlockEntityType.Builder.of< ScrewPropellerBlockEntity>(::ScrewPropellerBlockEntity,
-        RudderBlock).build(null) }
+    public val SCREW_PROPELLER_BLOCK_ENTITY = BLOCK_ENTITIES.register("screw_propeller") { BlockEntityType.Builder.of<ScrewPropellerBlockEntity>(::ScrewPropellerBlockEntity,
+        SCREW_PROPELLER_BLOCK.get()).build(null) }
 
     // end of RegistryObjects
 

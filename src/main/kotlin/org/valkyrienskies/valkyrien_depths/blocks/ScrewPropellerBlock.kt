@@ -16,7 +16,7 @@ import net.minecraft.world.level.block.state.BlockBehaviour.Properties
 import net.minecraft.world.level.block.state.BlockState
 import net.minecraft.world.level.block.state.StateDefinition
 import net.minecraft.world.level.block.state.properties.BlockStateProperties
-import org.valkyrienskies.valkyrien_depths.blockentities.RudderBlockEntity
+import org.valkyrienskies.valkyrien_depths.blockentities.ScrewPropellerBlockEntity
 
 object ScrewPropellerBlock : DirectionalBlock(Properties.copy(Blocks.COPPER_BLOCK)), EntityBlock {
     val waterLogged = BlockStateProperties.WATERLOGGED
@@ -39,7 +39,7 @@ object ScrewPropellerBlock : DirectionalBlock(Properties.copy(Blocks.COPPER_BLOC
         p0: BlockPos,
         p1: BlockState
     ): BlockEntity? {
-        return RudderBlockEntity(p0, p1)
+        return ScrewPropellerBlockEntity(p0, p1)
     }
 
     override fun <T : BlockEntity?> getTicker(
@@ -48,7 +48,7 @@ object ScrewPropellerBlock : DirectionalBlock(Properties.copy(Blocks.COPPER_BLOC
         type: BlockEntityType<T>
     ): BlockEntityTicker<T> = BlockEntityTicker { level, pos, state, blockEntity ->
         if (level.isClientSide) return@BlockEntityTicker
-        if (blockEntity is RudderBlockEntity) {
+        if (blockEntity is ScrewPropellerBlockEntity) {
             blockEntity.tick()
         }
     }
