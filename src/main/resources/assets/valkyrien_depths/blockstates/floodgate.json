@@ -1,0 +1,10 @@
+{
+  "variants": {
+    "open=true": {
+      "model": "valkyrien_depths:block/floodgate/floodgate_open"
+    },
+    "open=false": {
+      "model": "valkyrien_depths:block/floodgate/floodgate_closed"
+    }
+  }
+}
